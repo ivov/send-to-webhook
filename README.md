@@ -1,3 +1,34 @@
+# n8n fork of Send To Webhook
+
+## Installation
+
+1. `npm i && npm run build`
+2. Navigate to `chrome://extensions/`
+3. Click on `Load unpacked` and open `/build` dir
+4. Click on `Details` and on `Extension options`
+5. Paste this config, entering your first name
+
+```
+[
+  {
+    "name": "sendToJira",
+    "action": {
+      "url": "https://stage-app.n8n.cloud/webhook/send-to-jira",
+      "payload": {
+        "text": "%s",
+        "assignee": "YOUR_FIRST_NAME_GOES_HERE"
+      }
+    }
+  }
+]
+```
+
+## Usage
+
+Highlight one or more words, right-click to open the context menu and send to Jira. A Jira ticket will be opened in the PROD project, with the title set to the selection, with yourself as assignee, and with the URL in the community URL.
+
+----
+
 ## Send To WebHook
 
 [![CircleCI](https://circleci.com/gh/ericvan76/send-to-webhook/tree/master.svg?style=svg)](https://circleci.com/gh/ericvan76/send-to-webhook/tree/master)
