@@ -9,10 +9,7 @@
   "browser_action": {
     "default_popup": "index.html?page=popup"
   },
-  "permissions": [
-    "contextMenus",
-    "storage"
-  ],
+  "permissions": ["contextMenus", "storage", "tabs"],
   "content_security_policy": "script-src 'self' https://www.google-analytics.com; object-src 'self'",
   "icons": {
     "16": "images/icon-16.png",
