@@ -57,38 +57,40 @@ export class Background extends React.PureComponent<Props> {
 
   private send(param: string | undefined, action: WebHookAction) {
     if (param !== undefined && action !== undefined) {
-      const { method, url, payload } = action;
-      let body;
-      if (payload !== undefined) {
-        body = JSON.stringify(payload)
-          .replace('%d', new Date().toISOString())
-          .replace('%l', new Date().toLocaleString())
-          .replace('%s', param);
-      }
-      setBrowserIcon('Sending');
-      fetch(url, {
-        method: method || 'POST',
-        body,
-        mode: 'no-cors'
-      }).then((resp) => {
-        if (resp.status >= 400) {
-          setBrowserIcon('Error', `Error: ${resp.status}`);
-        } else {
-          setBrowserIcon('OK');
-          setTimeout(() => {
-            setBrowserIcon('Default');
-          }, 750);
+      chrome.tabs.query({ active: true, currentWindow: true }, tabs => {
+        const { method, url, payload } = action;
+        let body;
+        if (payload !== undefined) {
+          body = JSON.stringify({ ...payload, sourceUrl: tabs[0].url })
+            .replace('%d', new Date().toISOString())
+            .replace('%l', new Date().toLocaleString())
+            .replace('%s', param);
         }
-      }).catch((err: Error) => {
-        setBrowserIcon('Error', `Error: ${err.message}`);
-      });
+        setBrowserIcon('Sending');
+        fetch(url, {
+          method: method || 'POST',
+          body,
+          mode: 'no-cors'
+        }).then((resp) => {
+          if (resp.status >= 400) {
+            setBrowserIcon('Error', `Error: ${resp.status}`);
+          } else {
+            setBrowserIcon('OK');
+            setTimeout(() => {
+              setBrowserIcon('Default');
+            }, 750);
+          }
+        }).catch((err: Error) => {
+          setBrowserIcon('Error', `Error: ${err.message}`);
+        });
 
-      // @see: http://stackoverflow.com/a/22152353/1958200
-      ReactGA.set({ checkProtocolTask: null });
-      ReactGA.send({
-        hitType: 'event',
-        eventCategory: 'contextMenu',
-        eventAction: 'webhook'
+        // @see: http://stackoverflow.com/a/22152353/1958200
+        ReactGA.set({ checkProtocolTask: null });
+        ReactGA.send({
+          hitType: 'event',
+          eventCategory: 'contextMenu',
+          eventAction: 'webhook'
+        });
       });
 
     } else {
